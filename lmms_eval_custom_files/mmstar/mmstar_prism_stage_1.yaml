@@ -1,0 +1,9 @@
+dataset_path: Lin-Chen/MMStar
+dataset_kwargs:
+  token: True
+task: "mmstar_prism_stage_1"
+test_split: val
+output_type: generate_until
+doc_to_visual: !function stage_1_utils.mmstar_doc_to_visual
+doc_to_text: !function stage_1_utils.mmstar_doc_to_text
+doc_to_target: "answer"
