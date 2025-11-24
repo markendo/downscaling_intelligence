@@ -1,6 +1,9 @@
 <p align="center">
 
   <h1 align="center"><i>Downscaling Intelligence</i>: Exploring Perception and Reasoning Bottlenecks in Small Multimodal Models <br>
+    <a href='https://arxiv.org/abs/2511.17487'>
+    <img src='https://img.shields.io/badge/arxiv-report-red' alt='ArXiv PDF'>
+    </a>
     <a href='https://web.stanford.edu/~markendo/projects/downscaling_intelligence' style='padding-left: 0.5rem'>
     <img src='https://img.shields.io/badge/Project-Page-blue?style=flat&logo=Google%20chrome&logoColor=blue'>
     </a>
