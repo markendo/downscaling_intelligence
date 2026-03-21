@@ -32,6 +32,7 @@
 ## Contents
 - [Setup](#setup)
 - [Extract+Think](#extract-think)
+- [vLLM Integration](#vllm-integration)
 - [Visual Extraction Tuning Data Generation](#visual-extraction-tuning-data-generation)
 
 ## Setup
@@ -44,10 +45,11 @@ cd downscaling_intelligence
 ```
 
 2. Install packages
+*Note: to use vLLM, follow installation from [vLLM Integration section](#vllm-integration) instead*
 ```
 conda create -n extract_think python=3.10 -y
 conda activate extract_think
-pip install -e .
+pip install -e ".[hf]"
 ```
 
 3. Setup evaluation framework
@@ -125,6 +127,75 @@ python -m lmms_eval \
 | [<span style="font-variant: small-caps;">Extract+Think</span>](https://huggingface.co/markendo/llava-extract-qwen3-1.7B) | 1.7B / 4.0B | 2.4M | 85.3 | 52.6 |
 
 *For the full table, please refer to our paper.*
+
+## vLLM Integration
+
+We also support running Extract+Think with [vLLM](https://github.com/vllm-project/vllm) for faster inference through optimized attention kernels, continuous batching, and other serving optimizations.
+
+1. Convert model
+
+Our checkpoints are trained using the [LLaVA-OneVision](https://github.com/LLaVA-VL/LLaVA-NeXT) codebase, which uses a different model format than HuggingFace Transformers. Since vLLM loads models through Transformers, we first need to convert the checkpoints to a compatible format. Use the following script to do this conversion.
+
+```
+model_name=markendo/llava-extract-qwen3-1.7B
+base_model=Qwen/Qwen3-1.7B
+model_save_path=/path/to/save/model
+
+python convert_llavaonevision_qwen3.py \
+    --model_id $model_name \
+    --text_model_id $base_model \
+    --pytorch_dump_folder_path $model_save_path
+```
+
+2. Install packages and add evaluation files
+
+Create a new environment and install the vLLM dependencies:
+
+```
+conda create -n vllm python=3.10 -y
+conda activate vllm
+pip install -e ".[vllm]"
+```
+
+You will also need to add the following files to their respective locations:
+```
+cp lmms_eval_custom_files/qwen3_vllm.py lmms_eval_custom_files/llavaonevision_vllm.py lmms-eval/lmms_eval/models/simple/
+```
+
+Lastly, add `"qwen3_vllm": "Qwen3_VLLM", "llava_onevision_vllm": "Llava_OneVision_VLLM",` to the `AVAILABLE_SIMPLE_MODELS` dictionary in `lmms-eval/lmms_eval/models/__init__.py`.
+
+3. Run inference
+
+Stage 1:
+```
+cd lmms-eval
+model_path=/path/to/save/model
+
+python -m lmms_eval \
+    --model=llava_onevision_vllm \
+    --model_args=model_path=$model_path \
+    --tasks=mmstar_prism_stage_1 \
+    --batch_size=32 \
+    --output_path results \
+    --log_samples
+```
+
+Stage 2:
+
+```
+stage_1_path=/path/to/stage_1/samples.jsonl
+perception_model_size=1.7B
+pretrained=Qwen/Qwen3-4B
+
+enable_thinking=True
+python -m lmms_eval \
+    --model=qwen3_vllm \
+    --model_args="pretrained=${perception_model_size};${pretrained};${enable_thinking},stage_1_path=$stage_1_path" \
+    --tasks=mmstar_prism_stage_2 \
+    --batch_size=32 \
+    --output_path results \
+    --log_samples
+```
 
 ## Visual Extraction Tuning Data Generation
 
