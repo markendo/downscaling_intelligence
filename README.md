@@ -19,6 +19,7 @@
     ,
     <a href="https://ai.stanford.edu/~syyeung/"><strong>Serena Yeung-Levy</strong></a>
   </h3>
+  <h3 align="center">In CVPR 2026</h3>
   <div align="center">
   </div>
 </p>
@@ -213,10 +214,10 @@ This repository is built on top of [LLaVA-OneVision](https://github.com/LLaVA-VL
 
 ## Citation
 ```bib
-@article{endo2025downscalingintelligence,
+@inproceedings{endo2026downscalingintelligence,
   author    = {Endo, Mark and Yeung-Levy, Serena},
   title     = {Downscaling Intelligence: Exploring Perception and Reasoning Bottlenecks in Small Multimodal Models},
-  journal   = {arXiv preprint},
-  year      = {2025},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year      = {2026},
 }
 ```

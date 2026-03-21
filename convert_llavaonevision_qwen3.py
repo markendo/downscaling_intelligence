@@ -174,7 +174,7 @@ if __name__ == "__main__":
         required=True,
     )
     parser.add_argument(
-        "--pytorch_dump_folder_path", type=str, required=False, default="/pasteur/u/markendo/perception-alignment-mllm-summer2025/converted_llava_onevision_qwen3_final", help="Path to the output PyTorch model directory."
+        "--pytorch_dump_folder_path", type=str, required=True, help="Path to the output PyTorch model directory."
     )
     args = parser.parse_args()
 
